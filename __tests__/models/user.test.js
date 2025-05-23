@@ -1,21 +1,42 @@
 const { User } = require("../test-setup");
 
-describe("User Model", () => {
-  it("should create a user", async () => {
-    const user = await User.create({ username: "testuser", email: "test@test.com" })
 
-    expect(user).toBeDefined();
-    expect(user.username).toBe("testuser");
-    expect(user.email).toBe("test@test.com");
-  });
-
+describe("User Model Validations", () => {
   it("should validate email format", async () => {
-    // Build: Create a new user instance without saving it to the database
-    const user = User.build({ username: "testuser", email: "invalid-email" });
-    // Validate: Check if the user instance is valid
-    // rejects.toThrow() is used to check if the user instance is invalid
-    expect(user.validate()).rejects.toThrow();
+    const user = { username: "testuser1", email: "invalid-email" };
+    try {
+      await User.create(user);
+      fail("Should have thrown validation error");
+    } catch (error) {
+      expect(error.errors[0].path).toBe("email");
+    }
   });
-  
-});
 
+  it("should enforce unique username", async () => {
+    const user1 = { username: "uniqueuser", email: "u1@example.com" };
+    const user2 = { username: "uniqueuser", email: "u2@example.com" };
+    await User.create(user1);
+
+    try {
+      await User.create(user2);
+      fail("Should have thrown unique constraint error");
+    } catch (error) {
+      expect(error.name).toBe("SequelizeUniqueConstraintError");
+      expect(error.errors[0].path).toBe("username");
+    }
+  });
+
+  it("should enforce unique email", async () => {
+    const user1 = { username: "userone", email: "duplicate@example.com" };
+    const user2 = { username: "usertwo", email: "duplicate@example.com" };
+    await User.create(user1);
+
+    try {
+      await User.create(user2);
+      fail("Should have thrown unique constraint error");
+    } catch (error) {
+      expect(error.name).toBe("SequelizeUniqueConstraintError");
+      expect(error.errors[0].path).toBe("email");
+    }
+  });
+});
