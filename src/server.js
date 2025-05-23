@@ -1,32 +1,31 @@
 const express = require("express");
 const sequelize = require("./config/database");
-const UserRouter = require("./routes/User");
+const User = require("./models/User");
+const Accommodation = require("./models/Accommodation");
+const UserRouter = require("./routes/userRoutes");
+const AccommodationRouter = require("./routes/accommodationRoutes");
+const testConnection = require("./config/database")
+
+testConnection();
 
 const app = express();
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(express.json());
 
-// Test database connection
-async function testConnection() {
-  try {
-    await sequelize.authenticate();
-    console.log("Database connection has been established successfully.");
-    // Sync all models
-    await sequelize.sync({ force: true }); // Note: force: true will drop the table if it already exists
-    console.log("Database synchronized");
-  } catch (error) {
-    console.error("Unable to connect to the database:", error);
-  }
-}
-
-testConnection();
+User.hasMany(Accommodation, {
+  foreignKey: "userId",
+  onDelete: "CASCADE",
+});
+Accommodation.belongsTo(User, {
+  foreignKey: "userId",
+});
 
 // Routes
 app.use("/users", UserRouter);
+app.use("/accommodations", AccommodationRouter); 
 
-// Start server
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  console.log(`Server running on port ${PORT}`);
 });
