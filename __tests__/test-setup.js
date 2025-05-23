@@ -10,6 +10,7 @@ beforeAll(async () => {
 
 afterEach(async () => {
   await Accommodation.destroy({ where: {} });
+  await User.destroy({ where: {} });
 });
 
 afterAll(async () => {
