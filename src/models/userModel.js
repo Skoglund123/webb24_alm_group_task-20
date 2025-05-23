@@ -1,5 +1,5 @@
 const { DataTypes } = require("sequelize");
-const sequelize = require("../config/database");
+const { sequelize } = require("../config/database");
 const Accommodation = require("./accommodationModel");
 
 const User = sequelize.define("User", {
@@ -17,19 +17,19 @@ const User = sequelize.define("User", {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true,
-      validate: {isEmail: true},
+    validate: { isEmail: true },
   },
 
-    profileImage: {
+  profileImage: {
     type: DataTypes.STRING,
     allowNull: true,
-    validate: {isUrl: true},
+    validate: { isUrl: true },
   },
 });
 
 User.hasMany(Accommodation, {
   foreignKey: "userId",
-  onDelete: "CASCADE", 
+  onDelete: "CASCADE",
 });
 
 Accommodation.belongsTo(User, {

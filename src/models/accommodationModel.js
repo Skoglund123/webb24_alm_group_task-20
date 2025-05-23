@@ -1,5 +1,5 @@
 const { DataTypes } = require("sequelize");
-const sequelize = require("../config/database");
+const { sequelize } = require("../config/database");
 
 const Accommodation = sequelize.define("Accommodation", {
   id: {
@@ -36,6 +36,11 @@ const Accommodation = sequelize.define("Accommodation", {
   userId: {
     type: DataTypes.INTEGER,
     allowNull: true,
+    references: {
+      model: "Users",
+      key: "id",
+    },
+    onDelete: "CASCADE",
   },
 });
 
