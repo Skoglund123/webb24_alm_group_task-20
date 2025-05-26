@@ -39,4 +39,20 @@ describe("User Model Validations", () => {
       expect(error.errors[0].path).toBe("email");
     }
   });
+
+  it("should validate profileImage as a valid URL", async () => {
+  const user = {
+    username: "imageuser",
+    email: "image@example.com",
+    profileImage: "not-a-valid-url",
+  };
+
+  try {
+    await User.create(user);
+    fail("Should have thrown URL validation error");
+  } catch (error) {
+    expect(error.errors[0].path).toBe("profileImage");
+    expect(error.errors[0].message).toMatch(/Validation isUrl/i);
+  }
+  });
 });
