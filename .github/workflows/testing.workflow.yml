@@ -7,8 +7,7 @@ on:
 main
 pull_request:
   branches:
-main,
-,
+main
 
 jobs:
   test:
@@ -25,7 +24,4 @@ name: Set up environment variables using Secrets
 run: |
   echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> $GITHUB_ENV,
 name: Run tests
-run: npm run test,
-,
-,
-,
+run: npm run test
